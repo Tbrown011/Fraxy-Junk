@@ -1,0 +1,84 @@
+Try compile result:
+
+Code size: 26925 bytes (source: 32360bytes)
+Label count: 14
+Variable count: 58 (system:24 + user:34)
+
+Label list:
+	000
+	001 *menu
+	002 *stage select
+	003 *gameover
+	004 *info
+	005 *shipselect
+	006 *shipselect2
+	007 *shipselect3
+	008 *main
+	009 *stage1
+	010 *stage2
+	011 *returntomenu
+	012 *sidewall
+	013 *pleft
+	014 *hitdisplay
+
+Variable list: System
+	000 _null
+	001 _stat
+	002 _cnt
+	003 _time
+	004 _winx
+	005 _winy
+	006 _px
+	007 _py
+	008 _pscore
+	009 _pleft
+	010 _penergy
+	011 _penergymax
+	012 _pstock
+	013 _pstockmax
+	014 _killcore
+	015 _killparts
+	016 _global1
+	017 _global2
+	018 _global3
+	019 _global4
+	020 _global5
+	021 _global6
+	022 _global7
+	023 _global8
+
+Variable list: User
+	024 scriptid_main
+	025 scriptid_pleft
+	026 scriptid_gameover
+	027 scriptid_wall
+	028 scriptid_hitcount
+	029 gameover
+	030 res_life
+	031 title1
+	032 title2
+	033 hitcountshow
+	034 sidewall
+	035 fscore
+	036 exmess1
+	037 exmess2
+	038 exmess3
+	039 exmess4
+	040 exmess5
+	041 ss
+	042 fbosspic
+	043 varid
+	044 varx
+	045 vary
+	046 varangle
+	047 varid2
+	048 varx2
+	049 vary2
+	050 varangle2
+	051 varid3
+	052 varx3
+	053 vary3
+	054 varangle3
+	055 hitcount
+	056 pleftbonus
+	057 exmessage1

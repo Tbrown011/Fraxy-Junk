@@ -1,0 +1,1157 @@
+"FRAXY_TRY","[Rumia]Grand Stage",1
+"WINDOW",360,480
+"FONT", "Impact", 16, 0
+"INTERFACE",-1
+
+scriptID_main = 0
+scriptID_pleft = 0
+scriptID_gameover = 0
+scriptID_wall = 0
+scriptID_hitcount = 0
+//---------------------------
+// background and objects
+"BGLOAD","Stage\Backgrounds\BG3.bmp",4,0,300,4,255
+"BGLOAD","Stage\Backgrounds\401_03.bmp",2,1,500,4,255
+"BGLOAD","Stage\Backgrounds\401_03.bmp",4,1,2000,4,255
+"BGLOAD","Stage\Backgrounds\Menu.bmp",3,0,2000,3,255
+"BGLOAD","Stage\Backgrounds\BG4.bmp",2,0,3000,4,255
+"BGLOAD","Stage\Backgrounds\BG1-2.bmp",1,0,3000,4,255
+"LOADIMAGE","Stage\Backgrounds\Boss1.BMP", 0
+"LOADIMAGE","Stage\Backgrounds\MBoss1.BMP", 1
+"LOADIMAGE","Stage\Backgrounds\MBoss2.BMP", 2
+"LOADIMAGE","Stage\Backgrounds\Gameover.BMP", 3
+"LOADIMAGE","Stage\Backgrounds\OB1.BMP", 5
+"LOADIMAGE","Stage\Backgrounds\OB2.BMP", 6
+"LOADIMAGE","Stage\Backgrounds\Menu.BMP", 7
+"DSELOAD","Stage\Music\Cjingle2.mp3",0
+"DSELOAD","Stage\Music\Gameover.mp3",1
+"DSELOAD","Stage\Music\Stage1.mp3",2
+"DSELOAD","Stage\Music\Warning.mp3",3
+"DSELOAD","Stage\Music\Stage2.mp3",4
+"DSELOAD","Stage\Music\Boss.mp3",5
+"DSELOAD","Stage\Music\Menu.mp3",6
+"DSELOAD","Stage\Music\Boss2.mp3",7
+// player graphics
+"PLAYERGRAPHICS","PG\t401Orange.fpl"
+//---------------------------
+// setting
+"DEBUGMODE",117
+"BGCHANGE",3
+"ITEMSCROLL",512,10,2048,6
+"BGFADE",8,8,0
+"ITEMCONSTRUCT",1,12
+"BGSCROLL",0,100,2048,1
+"AREAFIXED",1
+"AREALIMIT",2,0,160,220
+"FONT","Impact",10,1
+"PLAYERANGLE",0,1
+"POS",0,0
+"RANK", 100
+"EBULLETCOLOR",0,-150,100,50
+"RANDOMIZE",_px
+Gameover=0
+
+//---------------------------
+// player stats
+Res_Life=30
+"PLAYERLEFT",Res_Life
+
+//---------------------------
+*Menu
+"WAIT", 50
+"PLAYERRESPAWN",0,0,135,0
+"PlayerLeft",Res_Life
+Gameover=0
+"BGCHANGE",3
+"DSEPLAY",6,100,1,0
+"CREATEOBJECT", Title1, 0, 0, 0, 20, -1, 100
+"CREATEOBJECT", Title2, 0, 0, 80, 100, -1, 110
+"OBJECTIMAGE", Title2, 6, 0, 0, 600, 400,4, 255
+"OBJECTIMAGE", Title1, 5, 0, 0, 400, 400,4, 255
+"REPEAT", -1
+"WAIT", 120
+"CHOICES","Play","Info", "Stage Select","Exit"
+"IF", _stat = 0
+"DESTROYOBJECT",Title1,10,30,4
+"DESTROYOBJECT",Title2,10,30,4
+"DSESTOP",6,100
+"GOTO", "*ShipSelect"
+"ENDIF"
+
+"IF", _stat = 1
+"DESTROYOBJECT",Title1,10,30,4
+"DESTROYOBJECT",Title2,10,30,4
+"COLOR",255,255,255
+"FLASH",20,20,20,255,3
+"WAIT", 60
+"GOTO", "*Info"
+"ENDIF"
+
+"IF", _stat = 2
+"DESTROYOBJECT",Title1,10,30,4
+"DESTROYOBJECT",Title2,10,30,4
+"COLOR",255,255,255
+"FLASH",20,40, 70,255,3
+"GOTO", "*Stage Select"
+"ENDIF"
+
+"IF", _stat = 3
+"DESTROYOBJECT",Title1,10,30,4
+"DESTROYOBJECT",Title2,10,30,4
+"END"
+"ENDIF"
+
+*Stage Select
+"WAIT", 110
+ "CHOICES","Stage 1","Stage 2"
+
+"IF", _stat = 0
+"DSESTOP",6,100
+"GOTO", "*ShipSelect2"
+"ENDIF"
+
+"IF", _stat = 1
+"DSESTOP",6,100
+"GOTO", "*ShipSelect3"
+"ENDIF"
+
+"WAIT", 1
+"LOOP"
+
+//Game Over
+*Gameover
+"IF", Gameover=1
+Hitcountshow=0
+Sidewall=2
+"WAIT", 1
+"BGCHANGE",3
+"SETPLAYER",-1
+"CLEARENEMY",1
+"COLOR",255,255,255
+"FONT","Impact",18,1
+FScore=_pscore
+"CREATEOBJECT", Gameover, 1, 0, 220, 25, 80, 20
+"OBJECTIMAGE", Gameover, 3, 0, 0, 400, 400, 4, 255
+"EXMESSAGE","Final Score: "+FScore,1,3,185,25,130,4
+"CLEARENEMY",1
+"DSESTOP",0,10
+"DSEPLAY",1,100,0,0
+"DSESTOP",2,10
+"DSESTOP",3,10
+"DSESTOP",4,10
+"DSESTOP",5,10
+"DSESTOP",6,10
+"DSESTOP",7,10
+"PLAYERSCORE",0
+"INTERFACE",0
+"WAIT", 100
+"SetScriptAddress", "*Menu", scriptID_main, 2
+"ENDIF"
+
+"WAIT",1
+"GOTO","*Gameover"
+
+"GOTO","*Menu"
+//Information
+*Info
+"COLOR",255,10,10
+"FONT","Impact",24,1
+"EXMESSAGE","C-Type (Offense Type)",1,3,185,-15,-1,4
+EXmess1=_stat
+"WAIT", 1
+"COLOR",255,255,255
+"FONT","Impact",14,0
+"EXMESSAGE","This Weapon has three modes, Shotgun, Rapid and Charge Beam.",1,3,180,10,-1,4
+EXmess2=_stat
+"EXMESSAGE","You also have a shield, controlled with the Extra Button.",1,3,185,25,-1,4
+EXmess3=_stat
+"EXMESSAGE","Power for the shield builds up over time, but can only be used",1,3,180,40,-1,4
+EXmess4=_stat
+"EXMESSAGE","if two bars are full.",1,3,185,55,-1,4
+EXmess5=_stat
+
+"WAIT", 350
+"DELEXMESSAGE",EXmess1,1
+"DELEXMESSAGE",EXmess2,1
+"DELEXMESSAGE",EXmess3,1
+"DELEXMESSAGE",EXmess4,1
+"DELEXMESSAGE",EXmess5,1
+
+"COLOR",10,255,10
+"FONT","Impact",24,1
+"EXMESSAGE","B-Type (Balanced Type)",1,3,185,-15,-1,4
+EXmess1=_stat
+"WAIT", 1
+"COLOR",255,255,255
+"FONT","Impact",14,0
+"EXMESSAGE","This Weapon has three modes, Rapid, Homing and Straight Beam.",1,3,180,10,-1,4
+EXmess2=_stat
+"EXMESSAGE","You also have a shield, controlled with the Extra Button.",1,3,185,25,-1,4
+EXmess3=_stat
+"EXMESSAGE","Power for the shield builds up over time, but can only be used",1,3,180,40,-1,4
+EXmess4=_stat
+"EXMESSAGE","if at least one bar is full.",1,3,185,55,-1,4
+EXmess5=_stat
+
+"WAIT", 350
+
+"DELEXMESSAGE",EXmess1,1
+"DELEXMESSAGE",EXmess2,1
+"DELEXMESSAGE",EXmess3,1
+"DELEXMESSAGE",EXmess4,1
+"DELEXMESSAGE",EXmess5,1
+"GOTO","*Menu"
+
+//Player Ship Selection
+*ShipSelect 
+SS=0
+"CHOICES","C-Type (Offense Type)","B-Type (Balanced Type)"
+"REPEAT", -1
+"IF", _stat = 0
+"COLOR",255,255,255
+"FLASH",20,40, 70,255,3
+"PLAYERSHIP",4,1,5,6,0,0
+SS=1
+"GOTO","*Main"
+"ENDIF"
+
+
+"IF", _stat = 1
+"COLOR",255,255,255
+"FLASH",20,40, 70,255,3
+"PLAYERSHIP",1,1,17,16,0,0
+SS=2
+"GOTO","*Main"
+"ENDIF"
+
+"WAIT", 1
+"LOOP"
+
+*ShipSelect2
+"CHOICES","C-Type (Offense Type)","B-Type (Balanced Type)"
+"REPEAT", -1
+
+"IF", _stat=0
+"PLAYERSHIP",4,1,5,6,0,0
+SS=1
+"GOTO","*Stage1"
+"ENDIF"
+
+"IF", _stat=1
+"PLAYERSHIP",1,1,17,16,0,0
+SS=2
+"GOTO","*Stage1"
+"ENDIF"
+
+"LOOP"
+
+*ShipSelect3
+"CHOICES","C-Type (Offense Type)","B-Type (Balanced Type)"
+"REPEAT", -1
+"IF", _stat=0
+SS=1
+"PLAYERSHIP",4,1,5,6,0,0
+"GOTO","*Stage2"
+"ENDIF"
+
+
+"IF", _stat=1
+SS=2
+"PLAYERSHIP",1,1,17,16,0,0
+"GOTO","*Stage2"
+"ENDIF"
+
+"LOOP"
+
+*Main
+
+*Stage1
+"IF", SS=1
+"PLAYERSHIP",4,1,5,6,0,0
+"CREATE2","Stage\PW\C-Type.fed",0,0,0,100,0
+"ENDIF"
+
+
+"IF", SS=2
+"PLAYERSHIP",1,1,17,16,0,0
+"CREATE2","Stage\PW\B-Type.fed",0,0,0,100,0
+"ENDIF"
+
+"AddSubScript", "*Pleft", scriptID_pleft
+"AddSubScript", "*Gameover", scriptID_gameover
+"DSESTOP",6,100
+"PARTSGRAPHICS","PG\Sintro.fpg",0
+"PARTSGRAPHICS","PG\Sintro.fpg",1
+"EBULLETCOLOR",2,-21,81,87
+"WAIT",30
+"BGCHANGE",1
+"BGSCROLL",2500,100,2048,1
+"EFFECTSCROLL",2500,100,2048,1
+"CREATE2","Stage\Drones\Block.fed",0,0,0,100,0
+"CREATE2","Stage\Scenes\KCarrierStart.fed",0,0,0,100,0
+"WAIT", 600
+"PARTSGRAPHICS","PG\default.fpg"
+"PARTSGRAPHICS","PG\default.fpg"
+"INTERFACE", 1
+"WAIT",20
+"BGSCROLL",1000,100,2048,1
+"EFFECTSCROLL",1000,100,2048,1
+"BGMOVE",1,0,180,-120,100,1
+"DSEPLAY",2,100,1,0
+"SETPLAYER",1
+"FONT","Impact",24,1
+"EXMESSAGE","Stage 1: Gnosis Underground",1,3,185,0,150,5
+"PLAYERRESPAWN",1,0,135,1
+"WAIT", 150
+"EBULLETCOLOR",0,-150,100,50
+// Level 1
+Hitcountshow=1
+"AddSubScript", "*Hitdisplay", scriptID_hitcount
+"REPEAT",2
+"CREATE2","Stage\Drones\Popcorn1.fed",2048,-30,-400,100,0
+"CREATE2","Stage\Drones\Popcorn1.fed",2048,30,-400,100,0
+"WAIT", 20
+"LOOP"
+"WAIT",90
+
+"CREATE2","Stage\Drones\Popcorn1.fed",2048,-20,-400,100,0
+"WAIT", 20
+"CREATE2","Stage\Drones\Popcorn1.fed",2048,0,-400,100,0
+"WAIT", 20
+"CREATE2","Stage\Drones\Popcorn1.fed",2048,20,-400,100,0
+"WAIT", 20
+"CREATE2","Stage\Drones\Popcorn1.fed",2048,40,-400,100,0
+"WAIT", 20
+
+"REPEAT",2
+"CREATE2","Stage\Drones\Popcorn1.fed",2048,-30,-400,100,0
+"CREATE2","Stage\Drones\Popcorn2.fed",2048,-30,-400,100,0
+"WAIT",30
+"LOOP"
+"WAIT",90
+
+"CREATE2","Stage\Drones\Popcorn1.fed",2048,20,-400,100,0
+"WAIT", 20
+"CREATE2","Stage\Drones\Popcorn1.fed",2048,0,-400,100,0
+"WAIT", 20
+"CREATE2","Stage\Drones\Popcorn1.fed",2048,-20,-400,100,0
+"WAIT", 20
+"CREATE2","Stage\Drones\Popcorn1.fed",2048,-40,-400,100,0
+"WAIT", 20
+
+"REPEAT",2
+"CREATE2","Stage\Drones\Popcorn1.fed",2048,30,-400,100,0
+"CREATE2","Stage\Drones\Popcorn3.fed",2048,30,-400,100,0
+"WAIT",30
+"LOOP"
+"WAIT",90
+//Level 2
+"REPEAT",2
+"CREATE2","Stage\Drones\Popcorn1.fed",2048,0,-400,100,0
+"CREATE2","Stage\Drones\PopcornL1.fed",2048,-30,-400,100,0
+"CREATE2","Stage\Drones\PopcornL1.fed",2048,30,-400,100,0
+"WAIT",30
+"LOOP"
+"WAIT",120
+"CREATE2","Stage\Drones\Popcorn1LT.fed",2048,40,-100,100,0
+"CREATE2","Stage\Drones\Popcorn1RT.fed",2048,-40,-100,100,0
+"WAIT", 30
+"CREATE2","Stage\Drones\Popcorn1LT.fed",2048,40,-100,100,0
+"CREATE2","Stage\Drones\Popcorn1RT.fed",2048,-40,-100,100,0
+"WAIT", 30
+"CREATE2","Stage\Drones\Popcorn1LT.fed",2048,40,-100,100,0
+"CREATE2","Stage\Drones\Popcorn1RT.fed",2048,-40,-100,100,0
+"WAIT", 30
+"CREATE2","Stage\Drones\Popcorn1-1.fed",2048,80,-400,100,0
+"WAIT", 10
+"CREATE2","Stage\Drones\Popcorn1-1.fed",2048,50,-400,100,0
+"WAIT", 10
+"CREATE2","Stage\Drones\Popcorn1-1.fed",2048,20,-400,100,0
+"WAIT", 10
+"CREATE2","Stage\Drones\Popcorn1-1.fed",2048,-10,-400,100,0
+"WAIT", 10
+"REPEAT",4
+"CREATE2","Stage\Drones\Popcorn2.fed",2048,-30,-400,100,0
+"WAIT", 10
+"CREATE2","Stage\Drones\PopcornL2.fed",2048,-30,-400,100,0
+"WAIT",10
+"LOOP"
+"LIMIT",2,-1
+"CREATE2","Stage\Drones\Popcorn1-1.fed",2048,-80,-400,100,0
+"WAIT", 10
+"CREATE2","Stage\Drones\Popcorn1-1.fed",2048,-50,-400,100,0
+"WAIT", 10
+"CREATE2","Stage\Drones\Popcorn1-1.fed",2048,-20,-400,100,0
+"WAIT", 10
+"CREATE2","Stage\Drones\Popcorn1-1.fed",2048,10,-400,100,0
+"WAIT", 10
+"REPEAT",4
+"CREATE2","Stage\Drones\Popcorn3.fed",2048,30,-400,100,0
+"WAIT", 10
+"CREATE2","Stage\Drones\PopcornL3.fed",2048,30,-400,100,0
+"WAIT",10
+"LOOP"
+"WAIT",250
+//Level 3
+"CREATE2","Stage\Drones\HLaser1.fed",2048,0,-400,100,0
+"REPEAT",2
+"CREATE2","Stage\Drones\Popcorn2.fed",2048,-30,-400,100,0
+"CREATE2","Stage\Drones\Popcorn3.fed",2048,30,-400,100,0
+"WAIT",30
+"LOOP"
+"WAIT",150
+//Level 4
+"CREATE2","Stage\Drones\Popcorn1LT.fed",2048,30,-100,100,0
+"CREATE2","Stage\Drones\Popcorn1RT.fed",2048,-50,-100,100,0
+"WAIT", 30
+"CREATE2","Stage\Drones\Popcorn1LT.fed",2048,40,-100,100,0
+"CREATE2","Stage\Drones\Popcorn1RT.fed",2048,-40,-100,100,0
+"CREATE2","Stage\Drones\HLaser2L.fed",2048,90,-100,100,0
+"CREATE2","Stage\Drones\HLaser2R.fed",2048,-90,-100,100,0
+"WAIT", 30
+"CREATE2","Stage\Drones\Popcorn1LT.fed",2048,50,-100,100,0
+"CREATE2","Stage\Drones\Popcorn1RT.fed",2048,-30,-100,100,0
+"WAIT", 30
+"CREATE2","Stage\Drones\Popcorn1LT.fed",2048,60,-100,100,0
+"CREATE2","Stage\Drones\Popcorn1RT.fed",2048,-20,-100,100,0
+"WAIT", 30
+"CREATE2","Stage\Drones\Popcorn1LT.fed",2048,50,-100,100,0
+"CREATE2","Stage\Drones\Popcorn1RT.fed",2048,-30,-100,100,0
+"WAIT", 30
+"CREATE2","Stage\Drones\Popcorn1LT.fed",2048,40,-100,100,0
+"CREATE2","Stage\Drones\Popcorn1RT.fed",2048,-40,-100,100,0
+"WAIT", 30
+"CREATE2","Stage\Drones\Popcorn1LT.fed",2048,30,-100,100,0
+"CREATE2","Stage\Drones\Popcorn1RT.fed",2048,-50,-100,100,0
+"WAIT", 30
+"CREATE2","Stage\Drones\Popcorn1LT.fed",2048,20,-100,100,0
+"CREATE2","Stage\Drones\Popcorn1RT.fed",2048,-60,-100,100,0
+"WAIT", 30
+"REPEAT", 10
+"CREATE2","Stage\Drones\S_Mine.fed",2048,-180+Rand(180),-400,100,0
+"WAIT",5
+"LOOP"
+"CREATE2","Stage\Drones\MHinderI1.fed",0,0,-300,100,0
+"REPEAT", 10
+"CREATE2","Stage\Drones\S_Mine.fed",2048,0+Rand(-180),-400,100,0
+"WAIT",5
+"LOOP"
+"LIMIT",2,-1
+"WAIT", 60
+"CREATE2","Stage\Mini-Bosses\Experiment42.fed",0,0,0,100,0
+"LIMIT", 2,-1
+"WAIT", 60
+"BGSCROLL",3000,1000,2048,1
+"EFFECTSCROLL",3000,100,2048,1
+//Level 5
+"REPEAT",2
+"CREATE2","Stage\Drones\Popcorn2.fed",2048,-30,-400,100,0
+"CREATE2","Stage\Drones\Popcorn3.fed",2048,30,-400,100,0
+"WAIT",30
+"LOOP"
+"CREATE2","Stage\Drones\PopcornS1.fed",2048,0,-400,100,0
+"WAIT", 150
+"REPEAT",2
+"CREATE2","Stage\Drones\StrafeRL.fed",2048,0,-400,100,0
+"CREATE2","Stage\Drones\StrafeLR.fed",2048,0,-350,100,0
+
+"WAIT",60
+"LOOP"
+"WAIT",150
+"CREATE2","Stage\Drones\Popup1LR.fed",2048,90,-100,100,0
+"WAIT", 30
+"CREATE2","Stage\Drones\Popchar1L.fed",2048,-200,-150,100,0
+"WAIT", 20
+"CREATE2","Stage\Drones\Popchar1R.fed",2048,200,-150,100,0
+"WAIT", 20
+"CREATE2","Stage\Drones\Popchar1L.fed",2048,-200,-150,100,0
+"WAIT", 20
+"CREATE2","Stage\Drones\Popchar1R.fed",2048,200,-150,100,0
+"WAIT", 20
+"CREATE2","Stage\Drones\Popchar1L.fed",2048,-200,-150,100,0
+"WAIT", 20
+"CREATE2","Stage\Drones\Popup1RL.fed",2048,-90,-100,100,0
+"WAIT", 30
+"CREATE2","Stage\Drones\Popchar1L.fed",2048,-200,-150,100,0
+"WAIT", 20
+"CREATE2","Stage\Drones\Popchar1R.fed",2048,200,-150,100,0
+"WAIT", 20
+"CREATE2","Stage\Drones\Popchar1L.fed",2048,-200,-150,100,0
+"WAIT", 20
+"CREATE2","Stage\Drones\Popchar1R.fed",2048,200,-150,100,0
+"WAIT", 20
+"CREATE2","Stage\Drones\Popchar1L.fed",2048,-200,-150,100,0
+"WAIT", 20
+"CREATE2","Stage\Drones\Popup1LR.fed",2048,90,-100,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Popup1RL.fed",2048,-90,-100,100,0
+"WAIT", 150
+//Level 6
+"CREATE2","Stage\Drones\MdStrafeLR.fed",2048,0,-400,100,0
+"WAIT",60
+"CREATE2","Stage\Drones\HLaser1.fed",2048,80,-400,100,0
+"REPEAT",2
+"CREATE2","Stage\Drones\PopcornS2.fed",2048,-30,-400,100,0
+"CREATE2","Stage\Drones\PopcornL2.fed",2048,-30,-400,100,0
+"WAIT",30
+"LOOP"
+"WAIT",200
+"CREATE2","Stage\Drones\PopcornS1.fed",3072,300,-30,100,0
+"CREATE2","Stage\Drones\PopcornS1.fed",1024,-300,30,100,0
+"WAIT",30
+"WAIT",150
+//Level 7
+"CREATE2","Stage\Drones\MdStrafeRL.fed",2048,0,-400,100,0
+"WAIT",60
+"CREATE2","Stage\Drones\HLaser1.fed",2048,-80,-400,100,0
+"REPEAT",2
+"CREATE2","Stage\Drones\PopcornS3.fed",2048,30,-400,100,0
+"CREATE2","Stage\Drones\PopcornL3.fed",2048,30,-400,100,0
+"WAIT",30
+"LOOP"
+"WAIT",200
+//Level 8
+"CREATE2","Stage\Drones\MdStrafeRL.fed",2048,0,-400,100,0
+"WAIT",120
+"CREATE2","Stage\Drones\MdStrafeLR.fed",2048,0,-400,100,0
+"WAIT",120
+"CREATE2","Stage\Drones\MdStrafeM.fed",2048,0,-400,100,0
+"LIMIT",2,-1
+"REPEAT",2
+"CREATE2","Stage\Drones\PopcornS2.fed",2048,-30,-400,100,0
+"CREATE2","Stage\Drones\PopcornS3.fed",2048,30,-400,100,0
+"WAIT",30
+"CREATE2","Stage\Drones\PopcornS2.fed",0,30,400,100,0
+"CREATE2","Stage\Drones\PopcornS3.fed",0,-30,400,100,0
+"LOOP"
+"WAIT", 160
+"CREATE2","Stage\Drones\HHinder1.fed",0,0,-400,100,0
+"LIMIT",2,-1
+"IF", _global8=1
+_global8=0
+"ITEM2",1,185,100
+"ENDIF"
+"WAIT",60
+Hitcountshow=0
+"DSESTOP",2,10
+"WAIT", 10
+"DSEPLAY",3,80,1,0
+"COLOR",255,0,0
+"FONT","Impact",18,1
+"EXMESSAGE","An AI piloted enemy is headed this way.",1,3,185,0,120,5
+"WAIT", 120
+"FONT","Impact",32,1
+"EXMESSAGE","Terra Class Tank",1,3,185,10,120,9
+"CREATEOBJECT", FBosspic, 1, 0, 280, 25, 130, 20
+"OBJECTIMAGE", FBosspic, 0, 0, 0, 400, 400, 4, 255
+"WAIT", 130
+"DSESTOP",3,0
+"COLOR",255,0,0
+"WAIT", 10
+"DSEPLAY",5,100,1,0
+"CREATE2","Stage\Bosses\SewerTank.fed",0,0,0,100,0
+varID=0
+varx=0
+vary=0
+varangle=0
+varID2=0
+varx2=0
+vary2=0
+varangle2=0
+varID3=0
+varx3=0
+vary3=0
+varangle3=0
+"GETINFO",52,286,varID
+"GETINFO",52,330,varID2
+"GETINFO",52,323,varID3
+"REPEAT", -1
+
+"IF",_global1=1
+_global1=0
+"GETINFO",12,varID,varx
+"GETINFO",13,varID,vary
+"GETINFO",14,varID,varangle
+"CREATE2","Stage/Drones/Ashot.fed", varangle, varx, vary, 0, 0
+"ENDIF"
+
+"IF",_global1=2
+_global1=0
+"GETINFO",12,varID,varx
+"GETINFO",13,varID,vary
+"GETINFO",14,varID,varangle
+"CREATE2","Stage/Drones/Cshot.fed", varangle, varx, vary, 0, 0
+"ENDIF"
+
+
+"IF",_global2=3
+_global2=0
+"GETINFO",12,varID2,varx2
+"GETINFO",13,varID2,vary2
+"GETINFO",14,varID2,varangle2
+"CREATE2","Stage/Drones/Mshot.fed", varangle2, varx2, vary2, 0, 0
+"GETINFO",12,varID3,varx3
+"GETINFO",13,varID3,vary3
+"GETINFO",14,varID3,varangle3
+"CREATE2","Stage/Drones/Mshot.fed", varangle3, varx3, vary3, 0, 0
+"ENDIF"
+
+"IF",_global1=3
+_global1=0
+"EXITLOOP"
+"ENDIF"
+
+"WAIT",2
+"LOOP"
+"LIMIT", 2,-1
+// Stage 1 End
+Hitcount=_global7
+Pleftbonus=_pleft
+"DELSUBSCRIPT", scriptID_gameover
+"DELSUBSCRIPT", scriptID_pleft
+"DSESTOP",5,50
+"WAIT", 50
+"FONT","Impact",24,1
+"COLOR",255,255,255
+"DSEPLAY",0,100,0,0
+Hitcountshow=0
+"EXMESSAGE","Stage 1 complete.",1,3,185,0,120,5
+"WAIT",130
+"FONT","Impact",24,1
+"EXMESSAGE","Hits: "+Hitcount,1,3,185,-45,120,5
+"EXMESSAGE","Bonus: "+Hitcount*200,1,3,185,-20,120,5
+"PLAYERSCORE",_pscore+(Hitcount*200)
+"EXMESSAGE","Lives Remaining: "+Pleftbonus,1,3,185,0,120,5
+"EXMESSAGE","Bonus: "+Pleftbonus*5000,1,3,185,25,120,5
+"PLAYERSCORE",_pscore+(Pleftbonus*5000)
+"EXMESSAGE","Stage Total: "+_pscore,1,3,185,50,120,5
+_global7=0
+"PLAYERRESPAWN",1,0,135,0
+"WAIT", 220
+"PLAYERPOS", 0, 0
+"PLAYERBIND", 120,100, 100
+"INTERFACE",0
+"WAIT", 115
+"SETPLAYER",-1
+"PARTSGRAPHICS","PG\Sintro.fpg"
+"PARTSGRAPHICS","PG\Sintro.fpg"
+"BGSCROLL",3000,100,2048,1
+"EFFECTSCROLL",3000,100,2048,1
+"CREATE2","Stage\Scenes\PEnd1.fed",0,0,0,100,0
+_global8=1
+"EBULLETCOLOR",2,-21,81,87
+"WAIT",150
+"PLAYERSCORE", 0
+"CLEARENEMY",1
+Res_life=_pleft
+"GOTO", "*Menu"
+
+*Stage2
+"AddSubScript", "*Pleft", scriptID_pleft
+"AddSubScript", "*Gameover", scriptID_gameover
+"IF", SS=1
+"PLAYERSHIP",4,1,5,6,0,0
+"CREATE2","Stage\PW\C-Type.fed",0,0,0,100,0
+"ENDIF"
+
+
+"IF", SS=2
+"PLAYERSHIP",1,1,17,16,0,0
+"CREATE2","Stage\PW\B-Type-2.fed",0,0,0,100,0
+"ENDIF"
+
+"PLAYERLEFT",Res_Life
+"DSESTOP",6,100
+"COLOR",255,255,255
+"FLASH",50,150,100,255,5
+"WAIT", 50
+"BGCHANGE",2
+"BGMOVE",2,1,0,0,100,1
+"BGMOVE",2,0,215,0,10,1
+"BGSCROLL",0,100,2048,1
+"BGFADE",0,0,0
+"PARTSGRAPHICS","PG/default.fpg"
+"PARTSGRAPHICS","PG/default.fpg"
+"EBULLETCOLOR",0,-150,100,50
+"WAIT", 250
+"CREATE2","Stage\Drones\Block.fed",0,0,0,100,0
+"CREATE2","Stage\Scenes\Lappear.fed",2048,0,430,100,0
+"WAIT", 200
+"BGMOVE",2,1,0,0,10,1
+"BGMOVE",2,0,215,0,10,1
+"SETPLAYER",1
+"INTERFACE",1
+"BGSCROLL",1200,100,2048,1
+"BGFADE",8,8,0
+"FONT","Impact",24,1
+"EXMESSAGE","Stage 2: Iron Gate",1,3,185,0,150,5
+"PLAYERRESPAWN",1,0,135,1
+"DSEPLAY",4,100,1,0
+"WAIT", 150
+_global1=0
+//Level 1
+Sidewall=1
+"ADDSUBSCRIPT","*Sidewall", scriptID_wall
+"WAIT", 20
+"CREATE2","Stage\Drones\S2Gate.fed",0,0,-300,100,0
+"WAIT",175
+"REPEAT",2
+"CREATE2","Stage\Drones\Turret1.fed",0,95,-300,100,0
+"CREATE2","Stage\Drones\Turret1.fed",0,-95,-300,100,0
+"WAIT",60
+"LOOP"
+"WAIT", 30
+"CREATE2","Stage\Drones\Turret1.fed",0,0,-300,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Turret2.fed",0,0,-300,100,0
+"WAIT",70
+"REPEAT",2
+"CREATE2","Stage\Drones\Turret2.fed",0,95,-300,100,0
+"CREATE2","Stage\Drones\Turret2.fed",0,-95,-300,100,0
+"WAIT",60
+"LOOP"
+"CREATE2","Stage\Drones\DWall2.fed",0,-60,-350,100,0
+"WAIT", 70
+"CREATE2","Stage\Drones\Turret1.fed",0,-30,-300,100,0
+"CREATE2","Stage\Drones\Turret2.fed",0,-80,-300,100,0
+"WAIT",40
+"CREATE2","Stage\Drones\DWall2.fed",0,60,-350,100,0
+"WAIT",70
+"CREATE2","Stage\Drones\Turret2.fed",0,30,-300,100,0
+"CREATE2","Stage\Drones\Turret1.fed",0,80,-300,100,0
+"WAIT", 150
+"CREATE2","Stage\Drones\DWall1.fed",0,90,-350,100,0
+"CREATE2","Stage\Drones\DWall1.fed",0,-90,-350,100,0
+"WAIT",10
+"CREATE2","Stage\Drones\Turret2.fed",0,0,-300,100,0
+"WAIT",30
+"CREATE2","Stage\Drones\Turret2.fed",0,0,-300,100,0
+"WAIT",30
+"CREATE2","Stage\Drones\Turret2.fed",0,0,-300,100,0
+"WAIT", 150
+"CREATE2","Stage\Drones\MWall2.fed",0,95,-350,100,0
+"CREATE2","Stage\Drones\MWall2.fed",0,-95,-350,100,0
+"WAIT",50
+"CREATE2","Stage\Drones\Pop2-1L.fed",2048,0,-350,1,0
+"WAIT",50
+"CREATE2","Stage\Drones\Pop2-1L.fed",2048,-30,-350,50,0
+"CREATE2","Stage\Drones\Pop2-1R.fed",2048,30,-350,50,0
+"CREATE2","Stage\Drones\Turret4.fed",0,0,-500,100,0
+"WAIT",100
+"CREATE2","Stage\Drones\Pop2-1L.fed",2048,-90,-350,50,0
+"CREATE2","Stage\Drones\Pop2-1R.fed",2048,90,-350,50,0
+"WAIT",100
+"CREATE2","Stage\Drones\Pop2-1L.fed",2048,-90,-350,50,0
+"CREATE2","Stage\Drones\Pop2-1R.fed",2048,90,-350,50,0
+"WAIT",60
+"CREATE2","Stage\Drones\Turret4.fed",0,90,-500,100,0
+"CREATE2","Stage\Drones\Turret4.fed",0,-90,-500,100,0
+"WAIT", 50
+"REPEAT",2
+"CREATE2","Stage\Drones\PopcornI1.fed",2048,0,-300,100,0
+"WAIT", 50
+"LOOP"
+"CREATE2","Stage\Drones\Pop3LR.fed",2048,-250,_py,100,0
+"WAIT",20
+"CREATE2","Stage\Drones\Pop3RL.fed",2048,250,_py,100,0
+"WAIT",20
+"CREATE2","Stage\Drones\Pop3LR.fed",2048,-250,_py,100,0
+"WAIT",20
+"CREATE2","Stage\Drones\Pop3RL.fed",2048,250,_py,100,0
+"CREATE2","Stage\Drones\Pop3LR.fed",2048,-250,_py,100,0
+"WAIT", 70
+"CREATE2","Stage\Drones\MWall2.fed",0,95,-350,100,0
+"CREATE2","Stage\Drones\MWall2.fed",0,-95,-350,100,0
+"WAIT", 50
+"REPEAT", 2
+"CREATE2","Stage\Drones\PopcornS1stg2V.fed",2048,0,-300,100,0
+"WAIT", 60
+"LOOP"
+"WAIT", 10
+"CREATE2","Stage\Drones\MWall2.fed",0,0,-350,100,0
+"REPEAT", 2
+"CREATE2","Stage\Drones\PopcornS1stg2V.fed",2048,85,-300,100,0
+"CREATE2","Stage\Drones\PopcornS1stg2V.fed",2048,-85,-300,100,0
+"WAIT", 60
+"LOOP"
+"WAIT", 50
+"CREATE2","Stage\Drones\MWall2.fed",0,95,-350,100,0
+"CREATE2","Stage\Drones\MWall2.fed",0,-95,-350,100,0
+"WAIT", 200
+"CREATE2","Stage\Drones\Pop2-2L.fed",2048,-70,-350,1,0
+"CREATE2","Stage\Drones\Pop2-2R.fed",2048,70,-350,1,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Turret7popLR.fed",0,-180,-450,100,0
+"CREATE2","Stage\Drones\Turret7popRL.fed",0,180,-450,100,0
+"CREATE2","Stage\Drones\Pop2-2L.fed",2048,-55,-350,1,0
+"CREATE2","Stage\Drones\Pop2-2R.fed",2048,55,-350,1,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Pop2-2L.fed",2048,-40,-350,1,0
+"CREATE2","Stage\Drones\Pop2-2R.fed",2048,40,-350,1,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Pop2-2L.fed",2048,-25,-350,1,0
+"CREATE2","Stage\Drones\Pop2-2R.fed",2048,25,-350,1,0
+"CREATE2","Stage\Drones\Turret2.fed",2048,95,-300,1,0
+"CREATE2","Stage\Drones\Turret2.fed",2048,-95,-300,1,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Turret7popLR.fed",0,-180,-450,100,0
+"CREATE2","Stage\Drones\Turret7popRL.fed",0,180,-450,100,0
+"CREATE2","Stage\Drones\Pop2-2L.fed",2048,-10,-350,1,0
+"CREATE2","Stage\Drones\Pop2-2R.fed",2048,-10,-350,1,0
+"WAIT", 50
+"CREATE2","Stage\Drones\HLaser2.fed",2048,0,-450,1,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Pop2-2L.fed",2048,20,-350,1,0
+"CREATE2","Stage\Drones\Pop2-2R.fed",2048,-20,-350,1,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Pop2-2L.fed",2048,35,-350,1,0
+"CREATE2","Stage\Drones\Pop2-2R.fed",2048,-35,-350,1,0
+"CREATE2","Stage\Drones\Turret7popLR.fed",0,-180,-450,100,0
+"CREATE2","Stage\Drones\Turret7popRL.fed",0,180,-450,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Pop2-2L.fed",2048,60,-350,1,0
+"CREATE2","Stage\Drones\Pop2-2R.fed",2048,-60,-350,1,0
+"WAIT",50
+"CREATE2","Stage\Drones\Pop2-2L.fed",2048,75,-350,1,0
+"CREATE2","Stage\Drones\Pop2-2R.fed",2048,-75,-350,1,0
+"WAIT",50
+"CREATE2","Stage\Drones\Turret6.fed",0,0,-350,100,0
+"WAIT", 320
+"CREATE2","Stage\Mini-Bosses\LunarA.fed",0,0,0,100,0
+"REPEAT", -1
+"IF", _global4=1
+_global4=0
+"EXITLOOP"
+"ENDIF"
+
+"WAIT", 1
+"LOOP"
+"WAIT", 100
+"CREATE2","Stage\Drones\Wall1.fed",0,115,-350,100,0
+"CREATE2","Stage\Drones\Wall1.fed",0,-115,-350,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Turret7popRL.fed",0,120,-350,100,0
+"CREATE2","Stage\Drones\Turret7popLR.fed",0,-120,-350,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Wall1.fed",0,115,-350,100,0
+"CREATE2","Stage\Drones\Wall1.fed",0,-115,-350,100,0
+"WAIT",100
+"CREATE2","Stage\Drones\Turret2.fed",0,95,-350,100,0
+"CREATE2","Stage\Drones\Turret2.fed",0,-95,-350,100,0
+"WAIT",150
+"CREATE2","Stage\Drones\WTurret1.fed",0,0,-300,100,0
+"CREATE2","Stage\Drones\WTurret2.fed",0,0,-300,100,0
+"WAIT",50
+"CREATE2","Stage\Drones\WTurret1.fed",0,0,-300,100,0
+"CREATE2","Stage\Drones\WTurret2.fed",0,0,-300,100,0
+"WAIT", 150
+"REPEAT", 3
+"CREATE2","Stage\Drones\StrafeRLa.fed",2048,0,-100,100,0
+"CREATE2","Stage\Drones\StrafeLRa.fed",2048,0,-100,100,0
+"WAIT",20
+"LOOP"
+"WAIT", 100
+"CREATE2","Stage\Drones\Popup1M.fed",2048,0,-100,100,0
+"WAIT", 150
+"CREATE2","Stage\Drones\Popup1M.fed",2048,50,-100,100,0
+"CREATE2","Stage\Drones\Popup1M.fed",2048,-50,-100,100,0
+"WAIT",100
+"CREATE2","Stage\Drones\AMWall1.fed",0,0,-350,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Pop3LR.fed",2048,-250,_py,100,0
+"WAIT", 25
+"CREATE2","Stage\Drones\Pop3RL.fed",2048,250,_py,100,0
+"WAIT", 25
+"CREATE2","Stage\Drones\Pop3LR.fed",2048,-250,_py,100,0
+"WAIT", 25
+"CREATE2","Stage\Drones\Pop3RL.fed",2048,250,_py,100,0
+"WAIT", 25
+"CREATE2","Stage\Drones\Pop3LR.fed",2048,-250,_py,100,0
+"CREATE2","Stage\Drones\MWall1.fed",0,105,-350,100,0
+"CREATE2","Stage\Drones\MWall1.fed",0,-105,-350,100,0
+"WAIT", 30
+"CREATE2","Stage\Drones\Turret2.fed",0,0,-350,100,0
+"WAIT",50
+"CREATE2","Stage\Drones\Turret7popLR.fed",0,-120,-350,100,0
+"CREATE2","Stage\Drones\Turret7popRL.fed",0,120,-350,100,0
+"WAIT",50
+"CREATE2","Stage\Drones\Turret7popLR.fed",0,-120,-350,100,0
+"CREATE2","Stage\Drones\Turret7popRL.fed",0,120,-350,100,0
+"WAIT",150
+"CREATE2","Stage\Drones\Turret5a.fed",0,105,-350,100,0
+"CREATE2","Stage\Drones\Dwall1.fed",0,0,-350,100,0
+"CREATE2","Stage\Drones\Turret5a.fed",0,-105,-350,100,0
+"WAIT", 300
+"CREATE2","Stage\Drones\Carrpt1.fed",0,-80,-475,100,0
+"CREATE2","Stage\Drones\Carrpt1.fed",0,80,-475,100,0
+"WAIT", 90
+"CREATE2","Stage\Drones\Carrpt6.fed",0,-80,-475,100,0
+"CREATE2","Stage\Drones\Carrpt6.fed",0,80,-475,100,0
+"WAIT", 90
+"CREATE2","Stage\Drones\Carrpt2.fed",0,-80,-475,100,0
+"CREATE2","Stage\Drones\Carrpt2.fed",0,80,-475,100,0
+"WAIT", 90
+"CREATE2","Stage\Drones\Carrpt6.fed",0,-80,-475,100,0
+"CREATE2","Stage\Drones\Carrpt6.fed",0,80,-475,100,0
+"WAIT", 90
+"CREATE2","Stage\Drones\Carrpt1.fed",0,-80,-475,100,0
+"CREATE2","Stage\Drones\Carrpt1.fed",0,80,-475,100,0
+"WAIT",90
+"CREATE2","Stage\Drones\Carrpt6.fed",0,-80,-475,100,0
+"CREATE2","Stage\Drones\Carrpt6.fed",0,80,-475,100,0
+"WAIT",90
+"CREATE2","Stage\Drones\Carrpt3.fed",0,-80,-475,100,0
+"CREATE2","Stage\Drones\Carrpt3.fed",0,80,-475,100,0
+"WAIT",90
+"CREATE2","Stage\Drones\Carrpt6.fed",0,-80,-475,100,0
+"CREATE2","Stage\Drones\Carrpt6.fed",0,80,-475,100,0
+"WAIT",90
+"CREATE2","Stage\Drones\Carrpt7.fed",0,-80,-475,100,0
+"CREATE2","Stage\Drones\Carrpt7.fed",0,80,-475,100,0
+"WAIT",90
+"CREATE2","Stage\Drones\Carrpt6.fed",0,-80,-475,100,0
+"CREATE2","Stage\Drones\Carrpt6.fed",0,80,-475,100,0
+"WAIT",90
+"CREATE2","Stage\Drones\Carrpt5.fed",0,-80,-475,100,0
+"CREATE2","Stage\Drones\Carrpt5.fed",0,80,-475,100,0
+"WAIT",90
+"CREATE2","Stage\Drones\Carrpt6.fed",0,-80,-475,100,0
+"CREATE2","Stage\Drones\Carrpt6.fed",0,80,-475,100,0
+"WAIT",90
+"CREATE2","Stage\Drones\Carrpt2.fed",0,-80,-475,100,0
+"CREATE2","Stage\Drones\Carrpt2.fed",0,80,-475,100,0
+"WAIT",90
+"CREATE2","Stage\Drones\Carrpt4.fed",0,-80,-475,100,0
+"CREATE2","Stage\Drones\Carrpt4.fed",0,80,-475,100,0
+"WAIT",350
+"CREATE2","Stage\Drones\Trapwall1.fed",0,0,-350,100,0
+"WAIT", 150
+"CREATE2","Stage\Drones\Wall2.fed",0,85,-350,100,0
+"CREATE2","Stage\Drones\CWalls.fed",0,-95,-350,100,0
+"WAIT", 250
+"CREATE2","Stage\Drones\WTurret1.fed",0,0,-300,100,0
+"CREATE2","Stage\Drones\Dwall1.fed",0,75,-350,100,0
+"CREATE2","Stage\Drones\Dwall1.fed",0,-30,-350,100,0
+"WAIT", 30
+"CREATE2","Stage\Drones\WTurret1.fed",0,0,-300,100,0
+"WAIT", 30
+"CREATE2","Stage\Drones\WTurret1.fed",0,0,-300,100,0
+"WAIT",50
+"CREATE2","Stage\Drones\Turret2.fed",2048,95,-300,1,0
+"CREATE2","Stage\Drones\Turret2.fed",2048,-95,-300,1,0
+"WAIT",150
+"CREATE2","Stage\Drones\Med1-1.fed",2048,-95,-300,1,0
+"CREATE2","Stage\Drones\Med1-1.fed",2048,95,-300,1,0
+"WAIT", 85
+"CREATE2","Stage\Drones\Med1-1.fed",2048,-65,-300,1,0
+"CREATE2","Stage\Drones\Med1-1.fed",2048,65,-300,1,0
+"WAIT", 85
+"CREATE2","Stage\Drones\Med1-1.fed",2048,-55,-300,1,0
+"CREATE2","Stage\Drones\Med1-1.fed",2048,55,-300,1,0
+"WAIT", 85
+"CREATE2","Stage\Drones\Med1-1.fed",2048,-35,-300,1,0
+"CREATE2","Stage\Drones\Med1-1.fed",2048,35,-300,1,0
+"WAIT", 250
+"CREATE2","Stage\Drones\Dwall1.fed",0,75,-350,100,0
+"CREATE2","Stage\Drones\Dwall1.fed",0,-75,-350,100,0
+"WAIT", 75
+"REPEAT", 10
+"CREATE2","Stage\Drones\Popcorn1.fed",2048,0,-350,100,0
+"WAIT", 10
+"LOOP"
+"WAIT", 200
+"CREATE2","Stage\Mini-Bosses\LunarB.fed",0,0,0,100,0
+"REPEAT", -1
+"IF", _global4=1
+_global4=0
+"EXITLOOP"
+"ENDIF"
+
+"WAIT", 1
+"LOOP"
+"WAIT", 100
+"CREATE2","Stage\Drones\Wall1.fed",0,0,-350,100,0
+"WAIT", 100
+"CREATE2","Stage\Drones\Wall1-1.fed",0,95,-350,100,0
+"CREATE2","Stage\Drones\Wall1-1.fed",0,-95,-350,100,0
+"WAIT", 100
+"CREATE2","Stage\Drones\Wall1-1.fed",0,0,-350,100,0
+"WAIT", 250
+"CREATE2","Stage\Drones\Turret5.fed",0,75,-300,100,0
+"CREATE2","Stage\Drones\Turret5.fed",0,25,-300,100,0
+"CREATE2","Stage\Drones\Turret5.fed",0,-25,-300,100,0
+"CREATE2","Stage\Drones\Turret5.fed",0,-75,-300,100,0
+"WAIT", 100
+"CREATE2","Stage\Drones\Wall1-1.fed",0,0,-350,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\HTurret1.fed",0,85,-350,100,0
+"WAIT", 25
+"CREATE2","Stage\Drones\HTurret1.fed",0,-85,-350,100,0
+"WAIT", 25
+"CREATE2","Stage\Drones\TWall1.fed",0,0,-350,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\HTurret1.fed",0,85,-350,100,0
+"WAIT", 25
+"CREATE2","Stage\Drones\HTurret1.fed",0,-85,-350,100,0
+"WAIT", 25
+"CREATE2","Stage\Drones\TWall2.fed",0,0,-350,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\HTurret1.fed",0,85,-350,100,0
+"WAIT", 25
+"CREATE2","Stage\Drones\HTurret1.fed",0,-85,-350,100,0
+"WAIT", 25
+"CREATE2","Stage\Drones\TWall1.fed",0,0,-350,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\HTurret1.fed",0,85,-350,100,0
+"WAIT", 25
+"CREATE2","Stage\Drones\HTurret1.fed",0,-85,-350,100,0
+"WAIT", 25
+"CREATE2","Stage\Drones\TWall2.fed",0,0,-350,100,0
+"WAIT", 100
+"CREATE2","Stage\Drones\MRWall1.fed",0,85,-300,100,0
+"CREATE2","Stage\Drones\MRWall1.fed",0,-85,-300,100,0
+"WAIT",120
+"CREATE2","Stage\Drones\Wall1-1.fed",0,0,-350,100,0
+"WAIT", 60
+"CREATE2","Stage\Drones\WTurrets2-2.fed",0,0,-350,100,0
+"CREATE2","Stage\Drones\WTurrets2-1.fed",0,0,-350,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Wall1-1.fed",0,0,-350,100,0
+"WAIT", 60
+"CREATE2","Stage\Drones\WTurrets2-2.fed",0,0,-350,100,0
+"CREATE2","Stage\Drones\WTurrets2-1.fed",0,0,-350,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Wall1-1.fed",0,0,-350,100,0
+"WAIT", 60
+"CREATE2","Stage\Drones\WTurrets2-2.fed",0,0,-350,100,0
+"CREATE2","Stage\Drones\WTurrets2-1.fed",0,0,-350,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Wall1-1.fed",0,0,-350,100,0
+"WAIT", 60
+"CREATE2","Stage\Drones\WTurrets2-2.fed",0,0,-350,100,0
+"CREATE2","Stage\Drones\WTurrets2-1.fed",0,0,-350,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Wall1-1.fed",0,0,-350,100,0
+"WAIT", 110
+"CREATE2","Stage\Drones\TrapWall3.fed",0,0,-350,100,0
+"WAIT", 200
+"CREATE2","Stage\Drones\Wall1-1.fed",0,0,-350,100,0
+"WAIT", 60
+"CREATE2","Stage\Drones\WTurrets2-1.fed",0,0,-350,100,0
+"CREATE2","Stage\Drones\WTurrets2-2.fed",0,0,-350,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Wall1-1.fed",0,0,-350,100,0
+"WAIT", 60
+"CREATE2","Stage\Drones\WTurrets2-1.fed",0,0,-350,100,0
+"CREATE2","Stage\Drones\WTurrets2-2.fed",0,0,-350,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Wall1-1.fed",0,0,-350,100,0
+"WAIT", 60
+"CREATE2","Stage\Drones\WTurrets2-1.fed",0,0,-350,100,0
+"CREATE2","Stage\Drones\WTurrets2-2.fed",0,0,-350,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Wall1-1.fed",0,0,-350,100,0
+"WAIT", 60
+"CREATE2","Stage\Drones\WTurrets2-1.fed",0,0,-350,100,0
+"CREATE2","Stage\Drones\WTurrets2-2.fed",0,0,-350,100,0
+"WAIT", 50
+"CREATE2","Stage\Drones\Wall1-1.fed",0,0,-350,100,0
+"WAIT", 110
+"CREATE2","Stage\Drones\TrapWall3R.fed",0,0,-350,100,0
+"WAIT",30
+Sidewall=2
+"WAIT",370
+"DSESTOP",4,10
+"WAIT", 10
+"DSEPLAY",3,80,1,0
+"COLOR",255,0,0
+"FONT","Impact",18,1
+"EXMESSAGE","An AI piloted enemy is headed this way.",0,3,5,0,120,5
+"WAIT", 120
+"FONT","Impact",32,1
+"EXMESSAGE","Lunar Defense System",0,3,0,10,120,9
+"WAIT", 100
+"DSESTOP",3,50
+"WAIT", 50
+"DSEPLAY",7,80,1,0
+"CREATE2","Stage\Bosses\LunarG.fed",0,0,0,100,0
+"IF", _global4=1
+_global4=0
+"EXITLOOP"
+"ENDIF"
+
+"WAIT", 1
+"LOOP"
+"DSESTOP",7,50
+"WAIT", 50
+"FONT","Impact",12,1
+"COLOR",255,255,255
+"DSEPLAY",0,100,0,0
+"EXMESSAGE","Stage 2 complete.",0,3,135,0,220,5
+"WAIT", 220
+"PLAYERPOS", 0, 0
+"PLAYERBIND", 120,100, 100
+"INTERFACE",0
+"WAIT", 115
+"SETPLAYER",-1
+"PARTSGRAPHICS","PG\Sintro.fpg"
+"PARTSGRAPHICS","PG\Sintro.fpg"
+"BGSCROLL",3000,100,2048,1
+"EFFECTSCROLL",3000,100,2048,1
+"CREATE2","Stage\Scenes\PEnd1.fed",0,0,0,100,0
+_global8=1
+"EBULLETCOLOR",2,-21,81,87
+"WAIT",150
+*ReturntoMenu
+"CLEARENEMY",1
+"SETPLAYER",-1
+"CLEARENEMY",1
+"DSESTOP",4,10
+"PLAYERSCORE",0
+"INTERFACE",0
+"GOTO","*Menu"
+
+
+*Sidewall
+"IF", Sidewall=1
+"REPEAT", -1
+"CREATE2","Stage\Drones\SidewallA.fed",2048,0,0,100,0
+"WAIT",30
+"ENDIF"
+
+"IF", Sidewall=2
+Sidewall=0
+"DELSUBSCRIPT", scriptID_wall
+"ENDIF"
+
+"LOOP"
+
+
+*Pleft
+"If", _pleft=0
+Gameover=1
+"SetScriptAddress", "*Gameover", scriptID_main, 2
+"DELSUBSCRIPT", scriptID_pleft
+"EndIf"
+"Wait", 1
+"Goto", "*Pleft"
+
+*Hitdisplay
+
+"REPEAT",-1
+"IF", Hitcountshow=1
+"DELEXMESSAGE",EXmessage1,1
+"WAIT",1
+"EXMESSAGE","Hits: "+_global7,0,8,-90,-40,10,0
+EXmessage1=_stat
+"ELSE"
+"EXMESSAGE","Hits: ???",0,8,-90,-40,10,0
+EXmessage1=_stat
+"WAIT", 30
+"DELEXMESSAGE",EXmessage1,0
+"DELSUBSCRIPT", scriptID_hitcount
+"ENDIF"
+
+"WAIT",5
+"LOOP"
+

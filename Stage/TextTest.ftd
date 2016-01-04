@@ -1,0 +1,24 @@
+"FRAXY_TRY","Text Testing",0
+Hitcount=50
+Pleftbonus=3
+"WINDOW",360,480
+"FONT", "Impact", 16, 0
+"INTERFACE",-1
+"AREAFIXED",1
+"POS",0,0
+"EFFECTSCROLL",3000,600,2048,2000
+"WAIT", 50
+"FONT","str1",24,1
+"COLOR",255,255,255
+"EXMESSAGE","Stage 1 complete.",1,3,185,0,120,5
+"WAIT",130
+"FONT","Impact",24,1
+"EXMESSAGE","Hits: "+Hitcount,1,3,185,-45,120,5
+"EXMESSAGE","Bonus: "+Hitcount*200,1,3,185,-20,120,5
+"PLAYERSCORE",_pscore+(Hitcount*200)
+"EXMESSAGE","Lives Remaining: "+Pleftbonus,1,3,175,0,120,5
+"EXMESSAGE","Bonus: "+Pleftbonus*5000,1,3,185,25,120,5
+"PLAYERSCORE",_pscore+(Pleftbonus*5000)
+"EXMESSAGE","Stage Total: "+_pscore,1,3,185,50,120,5
+"WAIT",150
+"END"
